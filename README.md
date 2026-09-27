@@ -1,4 +1,4 @@
-# BuildCorp — Professional Construction Services Website
+# DuraCast — Professional Construction Services Website
 
 A complete Django 4.2 website for a construction company: a responsive, animated
 public landing site plus a secure, configurable staff dashboard for managing
