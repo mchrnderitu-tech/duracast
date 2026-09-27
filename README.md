@@ -46,7 +46,7 @@ off the Play CDN in production.
 
 ```bash
 # 1. Clone and enter the project
-git clone <your-repo-url> duracast_project
+git clone https://github.com/mchrnderitu-tech/duracast.git
 cd duracast_project
 
 # 2. Create and activate a virtual environment
