@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="flex min-h-[80svh] items-center bg-primary-800 pt-32 pb-20">
+  <div class="mx-auto w-full max-w-2xl px-4 text-center sm:px-6">
+    <span class="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-secondary text-3xl text-white shadow-2xl shadow-secondary/30 animate-floaty">
+      <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+    </span>
+    <h1 class="mt-8 font-heading text-3xl font-extrabold text-white sm:text-5xl">Thank you — request received</h1>
+    <p class="mt-5 text-base leading-relaxed text-white/75">
+      A project manager will call you within one business day. In the meantime, explore our recent work
+      or read the answers to the questions we get asked most.
+    </p>
+
+    {% if reference %}
+      <p class="mt-6 inline-block rounded-xl border border-white/15 bg-white/5 px-5 py-3 text-sm text-white/80">
+        Reference number: <span class="font-bold text-secondary">#{{ reference }}</span>
+      </p>
+    {% endif %}
+
+    <div class="mt-10 flex flex-col justify-center gap-3 sm:flex-row">
+      <a href="{% url 'core:landing' %}#projects" class="rounded-xl bg-secondary px-7 py-3.5 text-sm font-bold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-secondary-600">View our work</a>
+      <a href="{% url 'core:faq' %}" class="rounded-xl border-2 border-white/25 px-7 py-3.5 text-sm font-bold text-white transition-all duration-300 hover:border-white hover:bg-white/10">Read the FAQ</a>
+    </div>
+
+    <p class="mt-10 text-xs text-white/50">
+      Need us sooner? Call <a href="tel:{{ site_content.contact_phone }}" class="font-semibold text-white/80 hover:text-secondary">{{ site_content.contact_phone }}</a>
+      or email <a href="mailto:{{ site_content.contact_email }}" class="font-semibold text-white/80 hover:text-secondary">{{ site_content.contact_email }}</a>.
+    </p>
+  </div>
+</section>
+{% endblock %}

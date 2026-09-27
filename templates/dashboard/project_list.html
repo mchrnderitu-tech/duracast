@@ -1,0 +1,77 @@
+{% extends "dashboard/dashboard_base.html" %}
+{% block title %}Projects{% endblock %}
+{% block page_heading %}Projects{% endblock %}
+
+{% block content %}
+<div class="mb-6 flex flex-wrap items-center justify-between gap-3">
+  <p class="text-sm text-body/60">{{ paginator.count|default:projects|length }} project{{ projects|length|pluralize }} in the gallery</p>
+  <a href="{% url 'dashboard:project-create' %}" class="inline-flex items-center gap-2 rounded-lg bg-secondary px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-secondary-600">
+    <i class="fa-solid fa-plus"></i> Add project
+  </a>
+</div>
+
+<div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+  <div class="overflow-x-auto">
+    <table class="min-w-full divide-y divide-gray-200 text-sm">
+      <thead class="bg-accent">
+        <tr>
+          <th class="px-5 py-3 text-left text-xs font-bold uppercase tracking-wider text-body/60">Project</th>
+          <th class="px-5 py-3 text-left text-xs font-bold uppercase tracking-wider text-body/60">Category</th>
+          <th class="px-5 py-3 text-left text-xs font-bold uppercase tracking-wider text-body/60">Location</th>
+          <th class="px-5 py-3 text-left text-xs font-bold uppercase tracking-wider text-body/60">Completed</th>
+          <th class="px-5 py-3 text-left text-xs font-bold uppercase tracking-wider text-body/60">Status</th>
+          <th class="px-5 py-3 text-right text-xs font-bold uppercase tracking-wider text-body/60">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-100">
+        {% for project in projects %}
+          <tr class="transition-colors hover:bg-gray-50">
+            <td class="px-5 py-4">
+              <div class="flex items-center gap-3">
+                <img src="{{ project.display_image }}" alt="" class="h-12 w-16 shrink-0 rounded-lg object-cover">
+                <div class="min-w-0">
+                  <p class="truncate font-bold text-primary">{{ project.title }}</p>
+                  {% if project.is_featured %}<span class="text-[11px] font-bold text-secondary">★ Featured</span>{% endif %}
+                </div>
+              </div>
+            </td>
+            <td class="px-5 py-4 text-body/80">{{ project.get_category_display }}</td>
+            <td class="px-5 py-4 text-body/70">{{ project.location|default:"—" }}</td>
+            <td class="px-5 py-4 text-body/70">{{ project.completed_on|date:"M Y"|default:"—" }}</td>
+            <td class="px-5 py-4">
+              {% if project.is_published %}
+                <span class="rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-bold text-emerald-700">Published</span>
+              {% else %}
+                <span class="rounded-full bg-gray-100 px-2.5 py-1 text-[11px] font-bold text-gray-600">Draft</span>
+              {% endif %}
+            </td>
+            <td class="px-5 py-4">
+              <div class="flex items-center justify-end gap-2">
+                <a href="{% url 'dashboard:project-update' project.pk %}" class="rounded-lg bg-accent px-3 py-1.5 text-xs font-bold text-primary transition-colors hover:bg-primary-100"><i class="fa-solid fa-pen mr-1"></i>Edit</a>
+                <a href="{% url 'dashboard:project-delete' project.pk %}" class="rounded-lg bg-red-50 px-3 py-1.5 text-xs font-bold text-red-600 transition-colors hover:bg-red-100" aria-label="Delete project"><i class="fa-solid fa-trash-can"></i></a>
+              </div>
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="6" class="px-5 py-14 text-center">
+              <p class="text-body/60">No projects yet.</p>
+              <a href="{% url 'dashboard:project-create' %}" class="mt-3 inline-flex rounded-lg bg-secondary px-5 py-2.5 text-sm font-bold text-white hover:bg-secondary-600">Add your first project</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% if is_paginated %}
+    <div class="flex items-center justify-between border-t border-gray-200 px-5 py-4 text-sm">
+      <p class="text-body/60">Page {{ page_obj.number }} of {{ paginator.num_pages }}</p>
+      <div class="flex gap-2">
+        {% if page_obj.has_previous %}<a href="?page={{ page_obj.previous_page_number }}" class="rounded-lg bg-accent px-4 py-2 font-bold text-primary hover:bg-primary-100">Previous</a>{% endif %}
+        {% if page_obj.has_next %}<a href="?page={{ page_obj.next_page_number }}" class="rounded-lg bg-primary px-4 py-2 font-bold text-white hover:bg-primary-600">Next</a>{% endif %}
+      </div>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

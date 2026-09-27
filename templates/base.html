@@ -1,0 +1,264 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#1A2B3C">
+  <title>{% block title %}{{ meta_title|default:"Duracast — Professional Construction Services" }}{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}{{ meta_description|default:'BuildCorp delivers residential and commercial construction from concept to completion.' }}{% endblock %}">
+  <link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+  <meta property="og:site_name" content="{{ site_content.company_name }}">
+  <meta property="og:title" content="{{ meta_title|default:site_content.tagline }}">
+  <meta property="og:description" content="{{ meta_description|default:site_content.tagline }}">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="{{ request.build_absolute_uri }}">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" referrerpolicy="no-referrer">
+
+  <!-- Animate On Scroll -->
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css">
+
+  <!-- Tailwind CSS (Play CDN — see README for the production build) -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: { DEFAULT: '#1A2B3C', 50: '#F4F6F8', 100: '#E4E8EC', 200: '#C4CCD4', 300: '#9AA7B4',
+                       400: '#63748A', 500: '#3F5165', 600: '#2C3D4E', 700: '#22303F', 800: '#1A2B3C', 900: '#111D29' },
+            secondary: { DEFAULT: '#E67E22', 50: '#FEF6EC', 100: '#FCE8CE', 200: '#F8CE9A', 300: '#F3B266',
+                         400: '#EE973E', 500: '#E67E22', 600: '#C96512', 700: '#A04E0F', 800: '#7A3C0D', 900: '#572A0A' },
+            accent: '#F3F4F6',
+            body: '#333333'
+          },
+          fontFamily: {
+            heading: ['Montserrat', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+            body: ['Open Sans', 'ui-sans-serif', 'system-ui', 'sans-serif']
+          },
+          maxWidth: { '8xl': '1400px' },
+          keyframes: { floaty: { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)' } } },
+          animation: { floaty: 'floaty 6s ease-in-out infinite' }
+        }
+      }
+    };
+  </script>
+
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  {% block extra_head %}{% endblock %}
+</head>
+
+<body class="font-body text-body antialiased bg-white">
+
+  <!-- === HEADER === -->
+  <header id="site-header"
+          x-data="{ open: false, scrolled: window.scrollY > 24 }"
+          @scroll.window="scrolled = window.scrollY > 24"
+          :class="scrolled || open ? 'bg-primary/95 backdrop-blur-md shadow-lg py-3' : 'bg-transparent py-5'"
+          class="fixed inset-x-0 top-0 z-50 transition-all duration-300">
+    <nav class="mx-auto flex w-full max-w-8xl items-center justify-between px-4 sm:px-6 lg:px-8" aria-label="Main">
+      <a href="{% url 'core:landing' %}" class="group flex items-center gap-2">
+        <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-secondary text-white shadow-lg transition-transform duration-300 group-hover:scale-105">
+          <i class="fa-solid fa-helmet-safety" aria-hidden="true"></i>
+        </span>
+        <span class="font-heading text-xl font-extrabold tracking-tight text-white sm:text-2xl">
+          {{ site_content.company_name|default:"BuildCorp" }}
+        </span>
+      </a>
+
+      <ul class="hidden items-center gap-1 lg:flex">
+        {% for link in nav_links %}
+          <li>
+            <a href="{% url link.url_name %}{% if link.anchor %}#{{ link.anchor }}{% endif %}"
+               class="rounded-md px-3 py-2 text-sm font-semibold text-white/85 transition-colors duration-200 hover:bg-white/10 hover:text-white">
+              {{ link.label }}
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+
+      <div class="hidden items-center gap-3 lg:flex">
+        {% if user.is_authenticated %}
+          {% if user.is_staff %}
+            <a href="{% url 'dashboard:home' %}" class="text-sm font-semibold text-white/85 hover:text-white">Dashboard</a>
+          {% endif %}
+          <form method="post" action="{% url 'accounts:logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="text-sm font-semibold text-white/85 hover:text-white">Log out</button>
+          </form>
+        {% else %}
+          <a href="{% url 'accounts:login' %}" class="text-sm font-semibold text-white/85 hover:text-white">Client login</a>
+        {% endif %}
+        <a href="{% url 'accounts:signup' %}"
+           class="btn-shine rounded-lg bg-secondary px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-secondary/30 transition-all duration-300 hover:-translate-y-0.5 hover:bg-secondary-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-white">
+          Get a Free Quote
+        </a>
+      </div>
+
+      <button type="button"
+              class="rounded-lg p-2 text-white transition-colors hover:bg-white/10 lg:hidden"
+              @click="open = !open"
+              :aria-expanded="open.toString()"
+              aria-controls="mobile-menu"
+              aria-label="Toggle navigation menu">
+        <svg x-show="!open" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16"/>
+        </svg>
+        <svg x-show="open" x-cloak class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/>
+        </svg>
+      </button>
+    </nav>
+
+    <!-- Mobile drawer -->
+    <div id="mobile-menu" x-show="open" x-cloak
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 -translate-y-4" x-transition:enter-end="opacity-100 translate-y-0"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-4"
+         class="lg:hidden">
+      <div class="mx-4 mt-4 max-h-[calc(100vh-6rem)] overflow-y-auto rounded-2xl border border-white/10 bg-primary-800/98 p-4 shadow-2xl backdrop-blur-md sm:mx-6">
+        <ul class="space-y-1">
+          {% for link in nav_links %}
+            <li>
+              <a href="{% url link.url_name %}{% if link.anchor %}#{{ link.anchor }}{% endif %}" @click="open = false"
+                 class="block rounded-lg px-4 py-3 text-base font-semibold text-white/90 transition-colors hover:bg-white/10 hover:text-white">
+                {{ link.label }}
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+        <div class="mt-4 space-y-3 border-t border-white/10 pt-4">
+          <a href="{% url 'accounts:signup' %}" @click="open = false"
+             class="block rounded-lg bg-secondary px-4 py-3 text-center text-base font-bold text-white transition-colors hover:bg-secondary-600">
+            Get a Free Quote
+          </a>
+          {% if user.is_authenticated %}
+            {% if user.is_staff %}
+              <a href="{% url 'dashboard:home' %}" class="block px-4 py-2 text-center text-sm font-semibold text-white/80">Dashboard</a>
+            {% endif %}
+            <form method="post" action="{% url 'accounts:logout' %}">
+              {% csrf_token %}
+              <button type="submit" class="block w-full px-4 py-2 text-center text-sm font-semibold text-white/80">Log out</button>
+            </form>
+          {% else %}
+            <a href="{% url 'accounts:login' %}" class="block px-4 py-2 text-center text-sm font-semibold text-white/80">Client login</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- === FLASH MESSAGES === -->
+  {% if messages %}
+    <div class="pointer-events-none fixed right-4 top-24 z-[60] w-[min(92vw,22rem)] space-y-2">
+      {% for message in messages %}
+        <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 7000)" x-show="show"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 translate-x-6" x-transition:enter-end="opacity-100 translate-x-0"
+             x-transition:leave="transition ease-in duration-200" x-transition:leave-end="opacity-0 translate-x-6"
+             class="pointer-events-auto relative rounded-xl border-l-4 bg-white p-4 shadow-xl ring-1 ring-black/5
+                    {% if message.tags == 'success' %}border-emerald-500{% elif message.tags == 'danger' %}border-red-500{% elif message.tags == 'warning' %}border-amber-500{% else %}border-primary{% endif %}">
+          <p class="pr-6 text-sm font-medium text-primary-800">{{ message }}</p>
+          <button type="button" class="absolute right-2 top-2 text-primary-300 hover:text-primary-600" @click="show = false" aria-label="Dismiss">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <main id="top">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- === FOOTER === -->
+  <footer class="bg-primary-900 text-white/75">
+    <div class="mx-auto w-full max-w-8xl px-4 py-14 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-secondary text-white">
+              <i class="fa-solid fa-helmet-safety" aria-hidden="true"></i>
+            </span>
+            <span class="font-heading text-xl font-extrabold text-white">{{ site_content.company_name|default:"BuildCorp" }}</span>
+          </div>
+          <p class="mt-4 text-sm leading-relaxed">{{ site_content.footer_tagline }}</p>
+        </div>
+
+        <div>
+          <h3 class="font-heading text-sm font-bold uppercase tracking-widest text-white">Quick links</h3>
+          <ul class="mt-4 space-y-2 text-sm">
+            <li><a href="{% url 'core:landing' %}" class="transition-colors hover:text-secondary">Home</a></li>
+            <li><a href="{% url 'core:about' %}" class="transition-colors hover:text-secondary">About</a></li>
+            <li><a href="{% url 'core:landing' %}#services" class="transition-colors hover:text-secondary">Services</a></li>
+            <li><a href="{% url 'core:landing' %}#projects" class="transition-colors hover:text-secondary">Projects</a></li>
+            <li><a href="{% url 'core:faq' %}" class="transition-colors hover:text-secondary">FAQ</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="font-heading text-sm font-bold uppercase tracking-widest text-white">Contact</h3>
+          <ul class="mt-4 space-y-3 text-sm">
+            <li class="flex gap-3"><i class="fa-solid fa-location-dot mt-1 text-secondary"></i><span>{{ site_content.contact_address }}</span></li>
+            <li class="flex gap-3"><i class="fa-solid fa-phone mt-1 text-secondary"></i><a href="tel:{{ site_content.contact_phone }}" class="hover:text-secondary">{{ site_content.contact_phone }}</a></li>
+            <li class="flex gap-3"><i class="fa-solid fa-envelope mt-1 text-secondary"></i><a href="mailto:{{ site_content.contact_email }}" class="hover:text-secondary">{{ site_content.contact_email }}</a></li>
+            <li class="flex gap-3"><i class="fa-solid fa-clock mt-1 text-secondary"></i><span>{{ site_content.office_hours }}</span></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="font-heading text-sm font-bold uppercase tracking-widest text-white">Follow us</h3>
+          <div class="mt-4 flex gap-3">
+            <a href="{{ site_content.facebook_url|default:'#' }}" target="_blank" rel="noopener noreferrer" aria-label="Facebook"
+               class="flex h-10 w-10 items-center justify-center rounded-lg bg-white/10 transition-all duration-300 hover:-translate-y-0.5 hover:bg-secondary">
+              <i class="fa-brands fa-facebook-f"></i>
+            </a>
+            <a href="{{ site_content.linkedin_url|default:'#' }}" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"
+               class="flex h-10 w-10 items-center justify-center rounded-lg bg-white/10 transition-all duration-300 hover:-translate-y-0.5 hover:bg-secondary">
+              <i class="fa-brands fa-linkedin-in"></i>
+            </a>
+            <a href="{{ site_content.instagram_url|default:'#' }}" target="_blank" rel="noopener noreferrer" aria-label="Instagram"
+               class="flex h-10 w-10 items-center justify-center rounded-lg bg-white/10 transition-all duration-300 hover:-translate-y-0.5 hover:bg-secondary">
+              <i class="fa-brands fa-instagram"></i>
+            </a>
+          </div>
+          <a href="{% url 'accounts:signup' %}"
+             class="mt-5 inline-flex items-center gap-2 rounded-lg border border-secondary/60 px-4 py-2 text-sm font-bold text-secondary transition-colors hover:bg-secondary hover:text-white">
+            Start your project <i class="fa-solid fa-arrow-right text-xs"></i>
+          </a>
+        </div>
+      </div>
+
+      <div class="mt-12 flex flex-col gap-4 border-t border-white/10 pt-6 text-xs sm:flex-row sm:items-center sm:justify-between">
+        <p>&copy; {% now "Y" %} {{ site_content.footer_copyright|default:"Duracast" }}. All Rights Reserved.</p>
+        <div class="flex flex-wrap gap-x-5 gap-y-2">
+          <a href="#" class="hover:text-secondary">Privacy Policy</a>
+          <a href="#" class="hover:text-secondary">Terms of Service</a>
+          <a href="{% url 'core:faq' %}" class="hover:text-secondary">Support</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- === SCRIPTS === -->
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <!-- Spline 3D viewer web component (pin an exact version in production) -->
+  <script type="module" src="https://unpkg.com/@splinetool/viewer/build/spline-viewer.js"></script>
+  <!-- Local scripts before Alpine so Alpine.data() registrations exist -->
+  <script src="{% static 'js/main.js' %}" defer></script>
+  <!-- Alpine Collapse plugin — MUST load before Alpine core -->
+  <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.14.1/dist/cdn.min.js"></script>
+  <!-- Alpine.js core (deferred, runs last) -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,14 @@
+{
+  "name": "duracast-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "tailwindcss -i ./static/src/input.css -o ./static/css/dist/build.css --watch",
+    "build": "tailwindcss -i ./static/src/input.css -o ./static/css/dist/build.css --minify"
+  },
+  "devDependencies": {
+    "@tailwindcss/forms": "^0.5.7",
+    "@tailwindcss/typography": "^0.5.10",
+    "tailwindcss": "^3.4.4"
+  }
+}

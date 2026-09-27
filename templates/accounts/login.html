@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<section class="flex min-h-[100svh] items-center bg-primary-800 pt-32 pb-20">
+  <div class="mx-auto w-full max-w-md px-4 sm:px-6">
+    <div class="rounded-3xl bg-white p-7 shadow-2xl sm:p-9">
+      <a href="{% url 'core:landing' %}" class="flex items-center gap-2">
+        <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-secondary text-white"><i class="fa-solid fa-helmet-safety"></i></span>
+        <span class="font-heading text-xl font-extrabold text-primary">{{ site_content.company_name|default:"BuildCorp" }}</span>
+      </a>
+      <h1 class="mt-6 font-heading text-2xl font-extrabold text-primary">Client login</h1>
+      <p class="mt-1.5 text-sm text-body/70">Sign in to track your project and messages.</p>
+
+      <form method="post" novalidate class="mt-7">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <input type="hidden" name="next" value="{{ next }}">
+        <button type="submit"
+                class="mt-6 w-full rounded-xl bg-primary px-6 py-3.5 text-base font-bold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary-600">
+          Sign in
+        </button>
+      </form>
+
+      <p class="mt-6 text-center text-sm text-body/70">
+        New here? <a href="{% url 'accounts:signup' %}" class="font-bold text-secondary hover:underline">Get a free quote</a>
+      </p>
+    </div>
+  </div>
+</section>
+{% endblock %}

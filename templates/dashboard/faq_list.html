@@ -1,0 +1,35 @@
+{% extends "dashboard/dashboard_base.html" %}
+{% block title %}FAQs{% endblock %}
+{% block page_heading %}FAQs{% endblock %}
+
+{% block content %}
+<div class="mb-6 flex flex-wrap items-center justify-between gap-3">
+  <p class="text-sm text-body/60">{{ faqs|length }} FAQ item{{ faqs|length|pluralize }} across the landing and FAQ pages</p>
+  <a href="{% url 'dashboard:faq-create' %}" class="inline-flex items-center gap-2 rounded-lg bg-secondary px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-secondary-600">
+    <i class="fa-solid fa-plus"></i> Add FAQ
+  </a>
+</div>
+
+<div class="divide-y divide-gray-100 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+  {% for faq in faqs %}
+    <div class="flex flex-wrap items-start justify-between gap-4 p-5 transition-colors hover:bg-gray-50">
+      <div class="min-w-0 flex-1">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="text-[11px] font-bold text-body/45">#{{ faq.order }}</span>
+          <h2 class="font-heading text-base font-bold text-primary">{{ faq.question }}</h2>
+          {% if not faq.is_active %}<span class="rounded-full bg-gray-100 px-2.5 py-0.5 text-[11px] font-bold text-gray-600">Hidden</span>{% endif %}
+        </div>
+        <p class="mt-2 text-sm leading-relaxed text-body/70">{{ faq.answer|truncatewords:28 }}</p>
+      </div>
+      <div class="flex shrink-0 gap-2">
+        <a href="{% url 'dashboard:faq-update' faq.pk %}" class="rounded-lg bg-accent px-4 py-2 text-xs font-bold text-primary hover:bg-primary-100"><i class="fa-solid fa-pen mr-1"></i>Edit</a>
+        <a href="{% url 'dashboard:faq-delete' faq.pk %}" class="rounded-lg bg-red-50 px-4 py-2 text-xs font-bold text-red-600 hover:bg-red-100" aria-label="Delete FAQ"><i class="fa-solid fa-trash-can"></i></a>
+      </div>
+    </div>
+  {% empty %}
+    <p class="p-10 text-center text-sm text-body/60">
+      No FAQs yet — <a href="{% url 'dashboard:faq-create' %}" class="font-bold text-secondary hover:underline">add the first one</a>.
+    </p>
+  {% endfor %}
+</div>
+{% endblock %}

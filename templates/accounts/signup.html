@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<section class="min-h-[100svh] bg-accent pt-32 pb-20 sm:pt-40">
+  <div class="mx-auto grid w-full max-w-8xl grid-cols-1 gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
+
+    <div data-aos="fade-up" class="lg:pt-6">
+      <p class="text-xs font-bold uppercase tracking-[0.2em] text-secondary">Free, no-obligation</p>
+      <h1 class="mt-4 font-heading text-3xl font-extrabold leading-tight text-primary sm:text-4xl lg:text-5xl">
+        Get a Free Quote for Your Project
+      </h1>
+      <p class="mt-5 max-w-lg text-base leading-relaxed text-body/80">
+        Create an account and tell us about your build. You'll get a line-item cost plan, a
+        milestone schedule and a named project manager — usually within two business days.
+      </p>
+      <ul class="mt-8 space-y-4">
+        <li class="flex items-start gap-3"><i class="fa-solid fa-circle-check mt-1 text-secondary"></i>
+          <span class="text-sm text-body/85"><strong class="text-primary">Transparent pricing.</strong> Hard costs, soft costs and contingency shown separately.</span></li>
+        <li class="flex items-start gap-3"><i class="fa-solid fa-circle-check mt-1 text-secondary"></i>
+          <span class="text-sm text-body/85"><strong class="text-primary">One accountable team.</strong> Design, engineering and site crews in-house.</span></li>
+        <li class="flex items-start gap-3"><i class="fa-solid fa-circle-check mt-1 text-secondary"></i>
+          <span class="text-sm text-body/85"><strong class="text-primary">No pressure.</strong> An estimate is not a commitment.</span></li>
+      </ul>
+      <img src="{{ site_content.about_image_primary_url }}" alt="BuildCorp project team on site" loading="lazy"
+           class="mt-10 hidden h-56 w-full rounded-2xl object-cover shadow-xl lg:block">
+    </div>
+
+    <div data-aos="fade-up" data-aos-delay="100">
+      <div class="rounded-3xl border border-gray-200 bg-white p-6 shadow-xl sm:p-9">
+        <h2 class="font-heading text-xl font-extrabold text-primary">Create your account</h2>
+        <p class="mt-1.5 text-sm text-body/70">Already registered? <a href="{% url 'accounts:login' %}" class="font-bold text-secondary hover:underline">Log in</a>.</p>
+
+        <form method="post" novalidate class="mt-7">
+          {% csrf_token %}
+          {{ form|crispy }}
+          <button type="submit"
+                  class="mt-7 w-full rounded-xl bg-secondary px-6 py-4 text-base font-bold text-white shadow-lg shadow-secondary/25 transition-all duration-300 hover:-translate-y-0.5 hover:bg-secondary-600">
+            Submit Request
+          </button>
+          <p class="mt-4 text-center text-xs text-body/60">
+            By submitting you agree to our <a href="#" class="underline">Privacy Policy</a> and <a href="#" class="underline">Terms of Service</a>.
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

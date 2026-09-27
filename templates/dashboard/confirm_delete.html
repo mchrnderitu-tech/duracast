@@ -1,0 +1,26 @@
+{% extends "dashboard/dashboard_base.html" %}
+{% block title %}Confirm delete{% endblock %}
+{% block page_heading %}Confirm deletion{% endblock %}
+
+{% block content %}
+<div class="max-w-lg rounded-2xl border border-red-200 bg-white p-6 shadow-sm sm:p-8">
+  <div class="flex items-start gap-4">
+    <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-red-50 text-xl text-red-600"><i class="fa-solid fa-triangle-exclamation"></i></span>
+    <div>
+      <h2 class="font-heading text-lg font-extrabold text-primary">Delete this {{ object_type }}?</h2>
+      <p class="mt-2 text-sm leading-relaxed text-body/75">
+        <span class="font-bold text-primary">{{ object_label }}</span> will be permanently removed.
+        This action cannot be undone{% if object_type == 'project' %}, and any uploaded image will be deleted from storage{% endif %}.
+      </p>
+    </div>
+  </div>
+
+  <form method="post" class="mt-7 flex flex-wrap gap-3">
+    {% csrf_token %}
+    <button type="submit" class="rounded-lg bg-red-600 px-6 py-3 text-sm font-bold text-white transition-colors hover:bg-red-700">
+      <i class="fa-solid fa-trash-can mr-1"></i> Yes, delete permanently
+    </button>
+    <a href="{{ cancel_url }}" class="rounded-lg bg-accent px-6 py-3 text-sm font-bold text-primary transition-colors hover:bg-primary-100">Cancel</a>
+  </form>
+</div>
+{% endblock %}
